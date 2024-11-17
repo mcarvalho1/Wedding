@@ -2,17 +2,19 @@ let presentesVisiveis = 6;
 
 function criarPresenteHTML(presente) {
     return `
-        <div class="bg-white shadow-md rounded-lg overflow-hidden">
-            <img src="${presente.imagem}" alt="${presente.nome}" class="w-full h-56 object-cover">
-            <div class="p-4">
-                <h3 class="text-lg font-bold text-gray-800">${presente.nome}</h3>
-                <p class="text-gray-600 mt-2">
-                    <span class="font-bold text-gray-800">R$ ${presente.preco.toFixed(2)}</span>
+        <div class="bg-white shadow-md rounded-lg overflow-hidden text-center max-w-[220px] mx-auto p-4 sm:max-w-[200px] md:max-w-[250px] lg:max-w-[280px] flex flex-col justify-between h-full">
+            <div>
+                <div class="flex justify-center items-center">
+                    <img src="${presente.imagem}" alt="${presente.nome}" class="rounded-lg object-cover w-full h-auto max-h-[160px] md:max-h-[180px]">
+                </div>
+                <h3 class="my-4 text-sm md:text-base font-semibold text-gray-800">${presente.nome}</h3>
+                <p class="my-1 text-base md:text-lg font-semibold text-gray-800">
+                    <span>R$ ${presente.preco.toFixed(2)}</span>
                 </p>
-                <button onclick="presentear(${presente.id})" class="mt-4 w-full bg-rose-500 text-white py-2 rounded-lg hover:bg-rose-600">
-                    Presentear
-                </button>
             </div>
+            <button onclick="presentear(${presente.id})" class="mt-3 bg-rose-500 text-white py-2 px-4 rounded-lg hover:bg-rose-600 w-full">
+                Presentear
+            </button>
         </div>
     `;
 }
@@ -40,17 +42,20 @@ function verMaisPresentes() {
     atualizarPresentes();
 }
 
+// Função para presentear
 function presentear(id) {
     alert(`Presente selecionado! Em breve você será redirecionado para o pagamento.`);
     // Adicione aqui a lógica para o processo de presentear
 }
 
+// Inicialização
 document.addEventListener('DOMContentLoaded', () => {
     // Adiciona o event listener para o botão ver mais
     document.getElementById('verMais').addEventListener('click', verMaisPresentes);
 
+    // Exibe os presentes iniciais
     atualizarPresentes();
 
     // Configura um intervalo para verificar novos presentes
-    setInterval(atualizarPresentes, 5000); // Verifica a cada 5 segundos
+    // setInterval(atualizarPresentes, 5000); // Verifica a cada 5 segundos
 });

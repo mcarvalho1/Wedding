@@ -41,6 +41,15 @@
             placeholder="https://exemplo.com/imagem.jpg">
         </div>
 
+        <div>
+          <label for="imagemUpload" class="block text-gray-700 mb-2">Ou faça upload de uma imagem</label>
+          <input type="file" id="imagemUpload" accept="image/*"
+            class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500">
+          <div id="previewImagem" class="mt-2 hidden">
+            <img id="imagemPreview" class="max-w-full h-40 object-cover rounded-lg" alt="Preview">
+          </div>
+        </div>
+
         <button type="submit" class="w-full bg-rose-500 text-white py-3 rounded-lg hover:bg-rose-600 transition-colors">
           Cadastrar Presente
         </button>
@@ -60,24 +69,53 @@
     document.addEventListener('DOMContentLoaded', () => {
       const form = document.getElementById('formPresente');
       const listaPresentes = document.getElementById('listaPresentesCadastrados');
+      const imagemUpload = document.getElementById('imagemUpload');
+      const previewImagem = document.getElementById('previewImagem');
+      const imagemPreview = document.getElementById('imagemPreview');
+      const imagemUrl = document.getElementById('imagem');
+
+      // Preview da imagem
+      imagemUpload.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            imagemPreview.src = e.target.result;
+            previewImagem.classList.remove('hidden');
+            imagemUrl.value = ''; // Limpa o campo de URL quando faz upload
+          }
+          reader.readAsDataURL(file);
+        }
+      });
+
+      // Limpa preview quando URL é inserida
+      imagemUrl.addEventListener('input', function() {
+        if (this.value) {
+          imagemUpload.value = '';
+          previewImagem.classList.add('hidden');
+        }
+      });
 
       // Carrega os presentes existentes
       function carregarPresentes() {
         const presentes = JSON.parse(localStorage.getItem('presentes') || '[]');
         listaPresentes.innerHTML = presentes.map(presente => `
-                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                        <div>
-                            <h3 class="font-bold text-gray-800">${presente.nome}</h3>
-                            <p class="text-gray-600">R$ ${presente.preco.toFixed(2)}</p>
-                        </div>
-                        <button 
-                            onclick="excluirPresente(${presente.id})"
-                            class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
-                        >
-                            Excluir
-                        </button>
-                    </div>
-                `).join('');
+          <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+            <div class="flex items-center gap-4">
+              <img src="${presente.imagem}" alt="${presente.nome}" class="w-16 h-16 object-cover rounded-lg">
+              <div>
+                <h3 class="font-bold text-gray-800">${presente.nome}</h3>
+                <p class="text-gray-600">R$ ${presente.preco.toFixed(2)}</p>
+              </div>
+            </div>
+            <button 
+              onclick="excluirPresente(${presente.id})"
+              class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+            >
+              Excluir
+            </button>
+          </div>
+        `).join('');
       }
 
       // Adiciona novo presente
@@ -86,16 +124,19 @@
 
         const presentes = JSON.parse(localStorage.getItem('presentes') || '[]');
         const novoPresente = {
-          id: Date.now(), // Usa timestamp como ID
+          id: Date.now(),
           nome: document.getElementById('nome').value,
           preco: parseFloat(document.getElementById('preco').value),
-          imagem: document.getElementById('imagem').value || "https://via.placeholder.com/300"
+          imagem: imagemUpload.files[0] 
+            ? imagemPreview.src 
+            : (document.getElementById('imagem').value || "https://via.placeholder.com/300")
         };
 
         presentes.push(novoPresente);
         localStorage.setItem('presentes', JSON.stringify(presentes));
 
         form.reset();
+        previewImagem.classList.add('hidden');
         carregarPresentes();
 
         alert('Presente cadastrado com sucesso!');
