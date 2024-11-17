@@ -124,23 +124,57 @@
   <!-- Lista de Presentes -->
   <div id="presentes" class="bg-gray-50 py-8 px-4">
     <div class="max-w-4xl mx-auto">
-        <h2 class="text-3xl font-serif text-gray-800 mb-4 text-center">Lista de Presentes</h2>
-        <p class="text-gray-600 text-base mb-4 text-center">
-            Escolha o presente que gostaria de nos dar e clique no botão para presentear. 
-            Cada presente representa um pedacinho do nosso sonho juntos.
-        </p>
-    
-        <!-- Grid de presentes -->
-        <div id="presentesGrid" class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <!-- Os presentes serão listados aqui -->
-        </div>
-    
-        <!-- Botão de ver mais -->
-        <div class="text-center mt-6">
-            <button id="verMais" class="bg-rose-500 text-white py-2 px-6 rounded-lg hover:bg-rose-900">
-                Ver mais presentes
-            </button>
-        </div>
+      <h2 class="text-3xl font-serif text-gray-800 mb-4 text-center">Lista de Presentes</h2>
+      <p class="text-gray-600 text-base mb-4 text-center">
+        Escolha o presente que gostaria de nos dar e clique no botão para presentear. Cada presente representa um pedacinho do nosso sonho juntos.
+      </p>
+
+      <!-- Grid de presentes -->
+      <div id="presentesGrid" class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Os presentes serão listados aqui -->
+      </div>
+
+      <!-- Botão de ver mais -->
+      <div class="text-center mt-6">
+        <button id="verMais" class="bg-rose-500 text-white py-2 px-6 rounded-lg hover:bg-rose-900">
+          Ver mais presentes
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Overlay -->
+  <div id="modalOverlay" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+    <!-- Modal Container -->
+    <div class="bg-white rounded-lg w-11/12 max-w-lg p-6 mx-2 sm:mx-auto">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-bold">Efetuar Pagamento</h2>
+        <button onclick="fecharModal()" class="text-gray-500 hover:text-gray-800 text-2xl">&times;</button>
+      </div>
+      <p class="mb-4 text-gray-700">Escolha uma forma de confirmar seu presente.</p>
+
+      <!-- Opções de pagamento -->
+      <div class="mb-4">
+        <label class="flex items-center mb-2">
+          <input type="radio" name="paymentOption" value="casamento" class="mr-2" id="optionCasamento">
+          Levar no dia do casamento
+        </label>
+        <label class="flex items-center">
+          <input type="radio" name="paymentOption" value="pix" class="mr-2" id="optionPix">
+          Pagar no Pix
+        </label>
+      </div>
+
+      <!-- QR Code do Pix (visível apenas se a opção de Pix for escolhida) -->
+      <div id="pixQRCode" class="hidden mb-4">
+        <img src="images/qr_code_pix.png" alt="QR Code Pix" class="w-full max-w-xs mx-auto">
+        <p class="text-center text-gray-600 mt-2">Escaneie o QR Code para realizar o pagamento via Pix.</p>
+      </div>
+
+      <!-- Botão para confirmar a escolha -->
+      <button onclick="confirmarEscolha()" class="w-full bg-rose-500 text-white py-2 px-4 rounded-lg hover:bg-rose-600 mt-4">
+        Confirmar Presente
+      </button>
     </div>
   </div>
 

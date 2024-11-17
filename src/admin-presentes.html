@@ -9,14 +9,12 @@
 </head>
 
 <body class="bg-gray-50">
-  <!-- Header -->
   <header class="bg-rose-500 text-white py-4">
     <div class="max-w-6xl mx-auto px-6">
       <h1 class="text-2xl font-serif">Administração - Lista de Presentes</h1>
     </div>
   </header>
 
-  <!-- Formulário de Cadastro -->
   <div class="max-w-2xl mx-auto mt-8 px-6">
     <div class="bg-white p-6 rounded-lg shadow-md">
       <h2 class="text-xl font-serif mb-6 text-gray-800">Cadastrar Novo Presente</h2>
@@ -24,30 +22,17 @@
       <form id="formPresente" class="space-y-6">
         <div>
           <label for="nome" class="block text-gray-700 mb-2">Nome do Presente</label>
-          <input type="text" id="nome"
-            class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500" required>
+          <input type="text" id="nome" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500" required>
         </div>
 
         <div>
           <label for="preco" class="block text-gray-700 mb-2">Preço (R$)</label>
-          <input type="number" id="preco" step="0.01"
-            class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500" required>
+          <input type="number" id="preco" step="0.01" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500" required>
         </div>
 
         <div>
           <label for="imagem" class="block text-gray-700 mb-2">URL da Imagem</label>
-          <input type="url" id="imagem"
-            class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
-            placeholder="https://exemplo.com/imagem.jpg">
-        </div>
-
-        <div>
-          <label for="imagemUpload" class="block text-gray-700 mb-2">Ou faça upload de uma imagem</label>
-          <input type="file" id="imagemUpload" accept="image/*"
-            class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500">
-          <div id="previewImagem" class="mt-2 hidden">
-            <img id="imagemPreview" class="max-w-full h-40 object-cover rounded-lg" alt="Preview">
-          </div>
+          <input type="url" id="imagem" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500" placeholder="https://exemplo.com/imagem.jpg">
         </div>
 
         <button type="submit" class="w-full bg-rose-500 text-white py-3 rounded-lg hover:bg-rose-600 transition-colors">
@@ -56,7 +41,6 @@
       </form>
     </div>
 
-    <!-- Lista de Presentes Cadastrados -->
     <div class="mt-8 bg-white p-6 rounded-lg shadow-md">
       <h2 class="text-xl font-serif mb-6 text-gray-800">Presentes Cadastrados</h2>
       <div id="listaPresentesCadastrados" class="space-y-4">
@@ -69,34 +53,7 @@
     document.addEventListener('DOMContentLoaded', () => {
       const form = document.getElementById('formPresente');
       const listaPresentes = document.getElementById('listaPresentesCadastrados');
-      const imagemUpload = document.getElementById('imagemUpload');
-      const previewImagem = document.getElementById('previewImagem');
-      const imagemPreview = document.getElementById('imagemPreview');
-      const imagemUrl = document.getElementById('imagem');
 
-      // Preview da imagem
-      imagemUpload.addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = function(e) {
-            imagemPreview.src = e.target.result;
-            previewImagem.classList.remove('hidden');
-            imagemUrl.value = ''; // Limpa o campo de URL quando faz upload
-          }
-          reader.readAsDataURL(file);
-        }
-      });
-
-      // Limpa preview quando URL é inserida
-      imagemUrl.addEventListener('input', function() {
-        if (this.value) {
-          imagemUpload.value = '';
-          previewImagem.classList.add('hidden');
-        }
-      });
-
-      // Carrega os presentes existentes
       function carregarPresentes() {
         const presentes = JSON.parse(localStorage.getItem('presentes') || '[]');
         listaPresentes.innerHTML = presentes.map(presente => `
@@ -106,6 +63,7 @@
               <div>
                 <h3 class="font-bold text-gray-800">${presente.nome}</h3>
                 <p class="text-gray-600">R$ ${presente.preco.toFixed(2)}</p>
+                ${presente.indisponivel ? `<p class="text-red-500 font-semibold">Indisponível - Escolha: ${presente.metodoPagamento}</p>` : ''}
               </div>
             </div>
             <button 
@@ -118,31 +76,25 @@
         `).join('');
       }
 
-      // Adiciona novo presente
       form.addEventListener('submit', (e) => {
         e.preventDefault();
-
         const presentes = JSON.parse(localStorage.getItem('presentes') || '[]');
         const novoPresente = {
           id: Date.now(),
           nome: document.getElementById('nome').value,
           preco: parseFloat(document.getElementById('preco').value),
-          imagem: imagemUpload.files[0] 
-            ? imagemPreview.src 
-            : (document.getElementById('imagem').value || "https://via.placeholder.com/300")
+          imagem: document.getElementById('imagem').value || "https://via.placeholder.com/300"
         };
 
         presentes.push(novoPresente);
         localStorage.setItem('presentes', JSON.stringify(presentes));
 
         form.reset();
-        previewImagem.classList.add('hidden');
         carregarPresentes();
 
         alert('Presente cadastrado com sucesso!');
       });
 
-      // Função para excluir presente
       window.excluirPresente = (id) => {
         if (confirm('Tem certeza que deseja excluir este presente?')) {
           let presentes = JSON.parse(localStorage.getItem('presentes') || '[]');
@@ -152,7 +104,6 @@
         }
       };
 
-      // Carrega os presentes ao iniciar a página
       carregarPresentes();
     });
   </script>
