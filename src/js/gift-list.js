@@ -1,20 +1,25 @@
 let presentesVisiveis = 6;
 
 function criarPresenteHTML(presente) {
+    // Formata o preço com vírgula como separador decimal
+    const precoFormatado = presente.preco.toFixed(2).replace('.', ',');
+
     return `
-        <div class="bg-white shadow-md rounded-lg overflow-hidden text-center max-w-[220px] mx-auto p-4 sm:max-w-[200px] md:max-w-[250px] lg:max-w-[280px] flex flex-col justify-between h-full">
-            <div>
-                <div class="flex justify-center items-center">
-                    <img src="${presente.imagem}" alt="${presente.nome}" class="rounded-lg object-cover w-full h-auto max-h-[160px] md:max-h-[180px]">
+        <div class="bg-white shadow-md rounded-lg overflow-hidden text-center w-full mx-auto p-4 flex flex-col justify-between h-full">
+            <div class="flex-grow">
+                <div class="flex justify-center items-center w-full h-[200px]">
+                    <img src="${presente.imagem}" alt="${presente.nome}" class="rounded-lg object-cover w-[200px] h-[200px]">
                 </div>
-                <h3 class="my-4 text-sm md:text-base font-semibold text-gray-800">${presente.nome}</h3>
-                <p class="my-1 text-base md:text-lg font-semibold text-gray-800">
-                    <span>R$ ${presente.preco.toFixed(2)}</span>
-                </p>
+                <h3 class="my-4 sm:px-4 text-sm md:text-base font-semibold text-gray-800">${presente.nome}</h3>
             </div>
-            <button onclick="presentear(${presente.id})" class="mt-3 bg-rose-500 text-white py-2 px-4 rounded-lg hover:bg-rose-600 w-full">
-                Presentear
-            </button>
+            <div class="mt-auto">
+                <p class="my-1 text-xl font-bold text-gray-800">
+                    <span>R$ ${precoFormatado}</span>
+                </p>
+                <button onclick="presentear(${presente.id})" class="mt-3 bg-rose-500 text-white py-2 px-4 rounded-lg hover:bg-rose-600 w-full">
+                    Presentear
+                </button>
+            </div>
         </div>
     `;
 }
