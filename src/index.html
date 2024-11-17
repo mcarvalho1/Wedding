@@ -1,0 +1,120 @@
+<!doctype html>
+<html class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="./output.css" rel="stylesheet">
+
+  <title>Thifany e Matheus</title>
+</head>
+<body>
+  <!-- Header com imagem -->
+  <div class="relative w-full h-screen bg-cover bg-center" style="background-image: url('images/home-image.jpg')">
+    <header class="absolute top-0 w-full z-10">
+      <nav class="mx-auto flex items-center justify-center p-6 lg:px-8">
+        <div class="lg:flex lg:gap-x-12">
+          <a href="#" class="text-base font-semibold text-white hover:text-gray-300">Ínicio</a>
+          <a href="#cerimonia" class="text-base font-semibold text-white hover:text-gray-300">Cerimônia</a>
+          <a href="#presentes" class="text-base font-semibold text-white hover:text-gray-300">Lista de presentes</a>
+          <a href="#" class="text-base font-semibold text-white hover:text-gray-300">Recados</a>
+        </div>
+      </nav>
+    </header>
+    <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+      <div class="text-center text-white">
+        <h1 class="text-4xl md:text-6xl font-serif">Thifany e Matheus</h1>
+        <p class="text-lg md:text-2xl mt-2">23 de fevereiro de 2025</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contagem regressiva -->
+  <div class="bg-white py-12">
+    <div class="text-center">
+      <h2 class="text-2xl font-serif text-gray-700 mb-6">Contagem Regressiva</h2>
+      <div class="flex justify-center gap-4">
+        <div class="flex flex-col items-center bg-rose-500 text-white px-6 py-4 rounded-md w-24">
+          <span id="days" class="text-4xl font-bold">00</span>
+          <span class="text-sm uppercase">Dias</span>
+        </div>
+        <div class="flex flex-col items-center bg-rose-500 text-white px-6 py-4 rounded-md w-24">
+          <span id="hours" class="text-4xl font-bold">00</span>
+          <span class="text-sm uppercase">Horas</span>
+        </div>
+        <div class="flex flex-col items-center bg-rose-500 text-white px-6 py-4 rounded-md w-24">
+          <span id="minutes" class="text-4xl font-bold">00</span>
+          <span class="text-sm uppercase">Minutos</span>
+        </div>
+        <div class="flex flex-col items-center bg-rose-500 text-white px-6 py-4 rounded-md w-24">
+          <span id="seconds" class="text-4xl font-bold">00</span>
+          <span class="text-sm uppercase">Segundos</span>
+        </div>
+      </div>      
+    </div>
+  </div>
+
+  <!-- Seção com texto -->
+  <div class="bg-pink-50 py-12 px-6 flex flex-col items-center text-center">
+    <div class="mb-6">
+      <img src="./images/floral-dark.svg" alt="Folha" class="w-32 h-32">
+    </div>
+    <p class="text-gray-700 text-lg font-serif px-24">
+      Estamos muito felizes por esse momento finalmente ter chegado! Para aproveitar e facilitar, fizemos esse site para compartilharmos com vocês detalhes do nosso dia tão especial.
+    </p>
+  </div>
+  
+  <!-- Mapa -->
+  <div id="cerimonia" class="bg-white py-16 px-6">
+    <div class="max-w-4xl mx-auto text-center">
+      <!-- Título -->
+      <h2 class="text-3xl font-serif text-gray-800 mb-6">Cerimônia e Festa</h2>
+      
+      <!-- Texto explicativo -->
+      <p class="text-gray-600 text-lg leading-relaxed mb-8">
+        Gostaríamos muito de contar com a presença de todos vocês nesse momento tão especial de nossas vidas. Por isso, contamos com a pontualidade de todos na nossa cerimônia e festa no Espaço Colonial, localizado na
+        <a href="https://maps.app.goo.gl/bnVCS38THfLqXHLN9" target="_blank" class="text-black font-bold underline">
+          Estrada do Cortume, 1402 - Santa Cruz, Rio de Janeiro - RJ, 23560-130.
+        </a>
+      </p>
+      
+      <!-- Mapa -->
+      <div class="aspect-w-16 aspect-h-9">
+        <iframe
+          src="https://www.google.com/maps/embed/v1/place?key=AIzaSyDF4VgbU9xWjttw7ebXRURtpNvvPpIB_eM&q=place_id:ChIJlYo13oH7mwARMfZ0zTGaIco"
+          width="600"
+          height="450"
+          frameborder="0"
+          style="border:0"
+          allowfullscreen
+          class="w-full rounded-lg shadow-lg">
+        </iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lista de Presentes -->
+  <div id="presentes" class="bg-gray-50 py-16 px-6">
+    <div class="max-w-6xl mx-auto">
+        <h2 class="text-3xl font-serif text-gray-800 mb-8 text-center">Lista de Presentes</h2>
+        <p class="text-gray-600 text-lg mb-6 text-center">
+            Escolha o presente que gostaria de nos dar e clique no botão para presentear. 
+            Cada presente representa um pedacinho do nosso sonho juntos.
+        </p>
+    
+        <!-- Grid de presentes -->
+        <div id="presentesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Os presentes serão listados aqui -->
+        </div>
+    
+        <!-- Botão de ver mais -->
+        <div class="text-center mt-8">
+            <button id="verMais" class="bg-gray-800 text-white py-2 px-6 rounded-lg hover:bg-gray-900">
+                Ver mais presentes
+            </button>
+        </div>
+    </div>
+</div>
+  <script src="js/gift-list.js"></script>
+  <script src="js/countdown.js"></script>
+</body>
+</html>
