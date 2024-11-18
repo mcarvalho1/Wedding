@@ -147,64 +147,70 @@
   <div id="modalOverlay" class="fixed inset-0 hidden z-50 bg-black bg-opacity-50">
     <!-- Overlay backdrop com blur -->
     <div class="fixed inset-0 bg-black/70 backdrop-blur-sm"></div>
-
+  
     <!-- Modal Container -->
     <div class="fixed inset-0 md:overflow-y-auto">
       <div class="flex min-h-full items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
         <div class="bg-white rounded-xl w-11/12 max-w-lg mx-2 sm:mx-auto shadow-2xl relative">
           <!-- Modal Header -->
-          <div class="p-4 border-b">
-            <div class="flex justify-between items-center">
-              <div>
-                <h2 class="text-2xl font-serif text-gray-800">Efetuar Pagamento</h2>
-                <p class="text-sm text-gray-600 mt-1">Escolha como deseja confirmar seu presente</p>
-              </div>
-              <button onclick="fecharModal()" class="text-gray-400 hover:text-gray-600 transition-colors">
+          <div class="p-4 border-b flex justify-between">  
+            <!-- Título e Subtítulo e botão de voltar-->
+            <div class="flex gap-2">
+              <button onclick="voltarParaOpcoes()" class="text-gray-400 hover:text-gray-600 transition-colors flex items-center mr-4">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                 </svg>
               </button>
+              <h2 class="text-1xl font-serif text-gray-800">Escolha como deseja confirmar seu presente</h2>
+              <!-- <p class="text-sm text-gray-600 mt-1">Escolha como deseja confirmar seu presente</p> -->
             </div>
+  
+            <!-- Botão de Fechar -->
+            <button onclick="fecharModal()" class="ml-auto text-gray-400 hover:text-gray-600 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
           </div>
-
+  
           <!-- Modal Content -->
-          <div id="paymentOptions" class="p-4">
+          <div id="paymentOptions" class="p-4 content-center">
             <!-- Opções de pagamento principais -->
-            <div id="mainPaymentOptions" class="space-y-4 mb-6">
-              <label class="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
-                <input type="radio" name="paymentOption" value="casamento" class="w-4 h-4 text-rose-500" id="optionCasamento">
+            <div id="mainPaymentOptions" class="space-y-4">
+              <label class="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-gray-50 focus:outline-none focus:ring focus:ring-violet-300 transition-colors">
+                <input type="radio" name="paymentOption" value="casamento" class="w-4 h-4 text-rose-500 hidden" id="optionCasamento">
                 <div class="ml-3">
                   <span class="font-medium text-gray-900">Levar no dia do casamento</span>
                   <p class="text-sm text-gray-500 mt-1">Você poderá entregar o presente pessoalmente no dia da celebração</p>
                 </div>
               </label>
-
+  
               <label class="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
-                <input type="radio" name="paymentOption" value="pix" class="w-4 h-4 text-rose-500" id="optionPix">
+                <input type="radio" name="paymentOption" value="pix" class="w-4 h-4 text-rose-500 hidden" id="optionPix">
                 <div class="ml-3">
                   <span class="font-medium text-gray-900">Pagar com Pix</span>
                   <p class="text-sm text-gray-500 mt-1">Transferência instantânea via QR Code ou chave Pix</p>
                 </div>
               </label>
             </div>
-
+  
             <!-- Opções de pagamento com Pix -->
             <div id="pixPaymentOptions" class="space-y-4 mb-6 hidden">
               <label class="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
-                <input type="radio" name="pixOption" value="qr" class="w-4 h-4 text-rose-500" id="optionPixQR">
+                <input type="radio" name="pixOption" value="qr" class="w-4 h-4 text-rose-500 hidden" id="optionPixQR">
                 <div class="ml-3">
                   <span class="font-medium text-gray-900">Pagar com QR Code</span>
                 </div>
               </label>
-
+  
               <label class="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
-                <input type="radio" name="pixOption" value="chave" class="w-4 h-4 text-rose-500" id="optionPixChave">
+                <input type="radio" name="pixOption" value="chave" class="w-4 h-4 text-rose-500 hidden" id="optionPixChave">
                 <div class="ml-3">
                   <span class="font-medium text-gray-900">Pagar com chave Pix</span>
                 </div>
               </label>
             </div>
-
+  
             <!-- Informações do Pix QR Code -->
             <div id="pixQRCodeInfo" class="hidden">
               <div class="bg-gray-50 rounded-lg py-4 space-y-6">
@@ -214,7 +220,7 @@
                 </div>
               </div>
             </div>
-
+  
             <!-- Informações da chave Pix -->
             <div id="pixChaveInfo" class="hidden">
               <div class="bg-gray-50 rounded-lg p-6 space-y-6">
@@ -230,7 +236,7 @@
               </div>
             </div>
           </div>
-
+  
           <!-- Modal Footer -->
           <div class="p-4 border-t bg-gray-50">
             <button onclick="confirmarEscolha()" class="w-full bg-rose-500 text-white py-3 px-4 rounded-lg hover:bg-rose-600 transition-colors font-medium">

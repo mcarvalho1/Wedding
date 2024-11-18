@@ -9,7 +9,7 @@ async function carregarPresentes() {
 
     grid.innerHTML = '';
 
-    presentes.slice(0, presentesVisiveis).forEach(presente => {
+    presentes.slice(0, presentesVisiveis).forEach((presente) => {
       if (!presente.indisponivel) {
         grid.innerHTML += criarPresenteHTML(presente);
       }
@@ -107,6 +107,9 @@ function abrirModal() {
   // Resetar estado do modal
   document.getElementById('optionCasamento').checked = false;
   document.getElementById('optionPix').checked = false;
+  document.getElementById('optionPixQR').checked = false;
+  document.getElementById('optionPixChave').checked = false;
+  
   document.getElementById('mainPaymentOptions').classList.remove('hidden');
   document.getElementById('pixPaymentOptions').classList.add('hidden');
   document.getElementById('pixQRCodeInfo').classList.add('hidden');
@@ -118,6 +121,40 @@ function fecharModal() {
   modal.classList.add('hidden');
   document.body.style.overflow = 'auto';
   presenteSelecionadoId = null;
+}
+
+function voltarParaOpcoes() {
+  const mainPaymentOptions = document.getElementById('mainPaymentOptions');
+  const pixPaymentOptions = document.getElementById('pixPaymentOptions');
+  const pixQRCodeInfo = document.getElementById('pixQRCodeInfo');
+  const pixChaveInfo = document.getElementById('pixChaveInfo');
+  const backButton = document.getElementById('backButton');
+
+  document.getElementById('optionPix').checked = false;
+  document.getElementById('optionPixQR').checked = false;
+  document.getElementById('optionPixChave').checked = false;
+
+  if (!pixPaymentOptions.classList.contains('hidden')) {
+    pixPaymentOptions.classList.add('hidden');
+    pixQRCodeInfo.classList.add('hidden');
+    pixChaveInfo.classList.add('hidden');
+    mainPaymentOptions.classList.remove('hidden');
+  } else {
+    fecharModal();
+  }
+}
+
+function selecionarOpcao(opcao) {
+  // Desmarcar todos os radios
+  document.querySelectorAll('input[type="radio"]').forEach((input) => {
+    input.checked = false;
+  });
+
+  // Marcar o radio correspondente
+  const radio = document.getElementById(`option${opcao.charAt(0).toUpperCase() + opcao.slice(1)}`);
+  if (radio) {
+    radio.checked = true;
+  }
 }
 
 function mostrarNotificacao(mensagem, tipo) {
@@ -142,12 +179,15 @@ function copiarTexto(elementId) {
   const elemento = document.getElementById(elementId);
   const texto = elemento.value || elemento.textContent;
 
-  navigator.clipboard.writeText(texto).then(() => {
-    mostrarNotificacao('Texto copiado com sucesso!', 'success');
-  }).catch(err => {
-    console.error('Erro ao copiar texto:', err);
-    mostrarNotificacao('Erro ao copiar texto', 'error');
-  });
+  navigator.clipboard
+    .writeText(texto)
+    .then(() => {
+      mostrarNotificacao('Texto copiado com sucesso!', 'success');
+    })
+    .catch((err) => {
+      console.error('Erro ao copiar texto:', err);
+      mostrarNotificacao('Erro ao copiar texto', 'error');
+    });
 }
 
 // Event Listeners
