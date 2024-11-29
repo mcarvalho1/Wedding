@@ -1,56 +1,229 @@
 let presentesVisiveis = 6;
+let presenteSelecionadoId = null;
 
-function criarPresenteHTML(presente) {
-    return `
-        <div class="bg-white shadow-md rounded-lg overflow-hidden">
-            <img src="${presente.imagem}" alt="${presente.nome}" class="w-full h-56 object-cover">
-            <div class="p-4">
-                <h3 class="text-lg font-bold text-gray-800">${presente.nome}</h3>
-                <p class="text-gray-600 mt-2">
-                    <span class="font-bold text-gray-800">R$ ${presente.preco.toFixed(2)}</span>
-                </p>
-                <button onclick="presentear(${presente.id})" class="mt-4 w-full bg-rose-500 text-white py-2 rounded-lg hover:bg-rose-600">
-                    Presentear
-                </button>
-            </div>
-        </div>
-    `;
-}
-
-function atualizarPresentes() {
+async function carregarPresentes() {
+  try {
+    const response = await fetch('http://localhost:3000/api/presentes');
+    const presentes = await response.json();
     const grid = document.getElementById('presentesGrid');
-    const presentes = JSON.parse(localStorage.getItem('presentes') || '[]');
-    
+
     grid.innerHTML = '';
-    
-    presentes.slice(0, presentesVisiveis).forEach(presente => {
+
+    presentes.slice(0, presentesVisiveis).forEach((presente) => {
+      if (!presente.indisponivel) {
         grid.innerHTML += criarPresenteHTML(presente);
+      }
     });
 
     const btnVerMais = document.getElementById('verMais');
     if (presentesVisiveis >= presentes.length) {
-        btnVerMais.classList.add('hidden');
+      btnVerMais.classList.add('hidden');
     } else {
-        btnVerMais.classList.remove('hidden');
+      btnVerMais.classList.remove('hidden');
     }
+  } catch (error) {
+    console.error('Erro ao carregar presentes:', error);
+  }
 }
 
-function verMaisPresentes() {
-    presentesVisiveis += 6;
-    atualizarPresentes();
+function criarPresenteHTML(presente) {
+  const precoFormatado = presente.preco.toFixed(2).replace('.', ',');
+  return `
+    <div class="bg-white shadow-md rounded-lg overflow-hidden text-center w-full mx-auto p-4 flex flex-col justify-between h-full">
+      <div class="flex-grow">
+        <div class="flex justify-center items-center w-full h-[200px]">
+          <img src="${presente.imagem}" alt="${presente.nome}" class="rounded-lg object-cover w-[200px] h-[200px]">
+        </div>
+        <h3 class="my-4 sm:px-4 text-sm md:text-base font-semibold text-gray-800">${presente.nome}</h3>
+      </div>
+      <div class="mt-auto">
+        <p class="my-1 text-xl font-bold text-gray-800">
+          <span>R$ ${precoFormatado}</span>
+        </p>
+        <button onclick="presentear(${presente.id})" 
+                class="mt-3 bg-rose-500 text-white hover:bg-rose-600 py-2 px-4 rounded-lg w-full">
+          Presentear
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+async function confirmarEscolha() {
+  const paymentOptionCasamento = document.getElementById('optionCasamento').checked;
+  const paymentOptionPix = document.getElementById('optionPix').checked;
+  const pixOptionQR = document.getElementById('optionPixQR').checked;
+  const pixOptionChave = document.getElementById('optionPixChave').checked;
+
+  if (!paymentOptionCasamento && !paymentOptionPix) {
+    alert('Por favor, selecione uma opção de pagamento.');
+    return;
+  }
+
+  let metodoPagamento = 'Levar no casamento';
+  if (paymentOptionPix) {
+    if (pixOptionQR) {
+      metodoPagamento = 'Pix - QR Code';
+    } else if (pixOptionChave) {
+      metodoPagamento = 'Pix - Chave';
+    } else {
+      alert('Por favor, selecione uma opção de Pix.');
+      return;
+    }
+  }
+
+  try {
+    const response = await fetch(`http://localhost:3000/api/presentes/${presenteSelecionadoId}/confirmar`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ metodoPagamento }),
+    });
+
+    if (response.ok) {
+      fecharModal();
+      carregarPresentes();
+      mostrarNotificacao('Presente confirmado com sucesso!', 'success');
+    } else {
+      mostrarNotificacao('Erro ao confirmar o presente. Tente novamente.', 'error');
+    }
+  } catch (error) {
+    console.error('Erro ao confirmar o presente:', error);
+    mostrarNotificacao('Erro ao confirmar o presente. Tente novamente.', 'error');
+  }
 }
 
 function presentear(id) {
-    alert(`Presente selecionado! Em breve você será redirecionado para o pagamento.`);
-    // Adicione aqui a lógica para o processo de presentear
+  presenteSelecionadoId = id;
+  abrirModal();
 }
 
+function abrirModal() {
+  const modal = document.getElementById('modalOverlay');
+  modal.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+
+  // Resetar estado do modal
+  document.getElementById('optionCasamento').checked = false;
+  document.getElementById('optionPix').checked = false;
+  document.getElementById('optionPixQR').checked = false;
+  document.getElementById('optionPixChave').checked = false;
+  
+  document.getElementById('mainPaymentOptions').classList.remove('hidden');
+  document.getElementById('pixPaymentOptions').classList.add('hidden');
+  document.getElementById('pixQRCodeInfo').classList.add('hidden');
+  document.getElementById('pixChaveInfo').classList.add('hidden');
+}
+
+function fecharModal() {
+  const modal = document.getElementById('modalOverlay');
+  modal.classList.add('hidden');
+  document.body.style.overflow = 'auto';
+  presenteSelecionadoId = null;
+}
+
+function voltarParaOpcoes() {
+  const mainPaymentOptions = document.getElementById('mainPaymentOptions');
+  const pixPaymentOptions = document.getElementById('pixPaymentOptions');
+  const pixQRCodeInfo = document.getElementById('pixQRCodeInfo');
+  const pixChaveInfo = document.getElementById('pixChaveInfo');
+  const backButton = document.getElementById('backButton');
+
+  document.getElementById('optionPix').checked = false;
+  document.getElementById('optionPixQR').checked = false;
+  document.getElementById('optionPixChave').checked = false;
+
+  if (!pixPaymentOptions.classList.contains('hidden')) {
+    pixPaymentOptions.classList.add('hidden');
+    pixQRCodeInfo.classList.add('hidden');
+    pixChaveInfo.classList.add('hidden');
+    mainPaymentOptions.classList.remove('hidden');
+  } else {
+    fecharModal();
+  }
+}
+
+function selecionarOpcao(opcao) {
+  // Desmarcar todos os radios
+  document.querySelectorAll('input[type="radio"]').forEach((input) => {
+    input.checked = false;
+  });
+
+  // Marcar o radio correspondente
+  const radio = document.getElementById(`option${opcao.charAt(0).toUpperCase() + opcao.slice(1)}`);
+  if (radio) {
+    radio.checked = true;
+  }
+}
+
+function mostrarNotificacao(mensagem, tipo) {
+  const notificacao = document.createElement('div');
+  notificacao.className = `fixed bottom-4 right-4 p-4 rounded-lg shadow-lg text-white ${
+    tipo === 'success' ? 'bg-green-500' : 'bg-red-500'
+  } transform transition-all duration-300 translate-y-0 opacity-100`;
+  notificacao.textContent = mensagem;
+
+  document.body.appendChild(notificacao);
+
+  // Animação de fade out
+  setTimeout(() => {
+    notificacao.classList.add('translate-y-2', 'opacity-0');
+    setTimeout(() => {
+      document.body.removeChild(notificacao);
+    }, 300);
+  }, 3000);
+}
+
+function copiarTexto(elementId) {
+  const elemento = document.getElementById(elementId);
+  const texto = elemento.value || elemento.textContent;
+
+  navigator.clipboard
+    .writeText(texto)
+    .then(() => {
+      mostrarNotificacao('Texto copiado com sucesso!', 'success');
+    })
+    .catch((err) => {
+      console.error('Erro ao copiar texto:', err);
+      mostrarNotificacao('Erro ao copiar texto', 'error');
+    });
+}
+
+// Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
-    // Adiciona o event listener para o botão ver mais
-    document.getElementById('verMais').addEventListener('click', verMaisPresentes);
+  // Inicializar carregamento de presentes
+  carregarPresentes();
 
-    atualizarPresentes();
+  // Event listener para opções de pagamento
+  document.addEventListener('change', (event) => {
+    const mainPaymentOptions = document.getElementById('mainPaymentOptions');
+    const pixPaymentOptions = document.getElementById('pixPaymentOptions');
+    const pixQRCodeInfo = document.getElementById('pixQRCodeInfo');
+    const pixChaveInfo = document.getElementById('pixChaveInfo');
 
-    // Configura um intervalo para verificar novos presentes
-    setInterval(atualizarPresentes, 5000); // Verifica a cada 5 segundos
+    if (event.target && event.target.name === 'paymentOption') {
+      if (event.target.value === 'pix') {
+        mainPaymentOptions.classList.add('hidden');
+        pixPaymentOptions.classList.remove('hidden');
+        pixQRCodeInfo.classList.add('hidden');
+        pixChaveInfo.classList.add('hidden');
+      } else {
+        mainPaymentOptions.classList.remove('hidden');
+        pixPaymentOptions.classList.add('hidden');
+        pixQRCodeInfo.classList.add('hidden');
+        pixChaveInfo.classList.add('hidden');
+      }
+    }
+
+    if (event.target && event.target.name === 'pixOption') {
+      if (event.target.value === 'qr') {
+        pixQRCodeInfo.classList.remove('hidden');
+        pixChaveInfo.classList.add('hidden');
+      } else if (event.target.value === 'chave') {
+        pixQRCodeInfo.classList.add('hidden');
+        pixChaveInfo.classList.remove('hidden');
+      }
+    }
+  });
 });
